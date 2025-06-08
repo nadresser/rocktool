@@ -13,6 +13,10 @@ bag = {
 
 }
 
+roundCounter = 0
+pickHistory = {}
+
+
 function bag:addRock(color)
 	bag.rocks[#bag.rocks +1 ] = color
 	-- body
@@ -25,23 +29,33 @@ function bag:showrocks()
 end
 
 function bag:pickARock()
-	print(bag.rocks[math.random(1, #bag.rocks)])
+	pick = bag.rocks[math.random(1,#bag.rocks)]
+
+	print(table.concat(pickHistory, ", "))
+	pickHistory[roundCounter] = pick
+	
 end
 
-bag:addRock ("red")
-bag:addRock ("white")
-
-
- --
-math.randomseed(os.time())
-
-function bag:empty()
+function bag:endRound()
 	bag.rocks = {}
 
 bag:addRock ("red")
 bag:addRock ("white")
-
+roundCounter = roundCounter+1
+	if roundCounter == 2 then
+		bag:addRock("white")
+		bag:addRock("red")
+-- this is where on round three we will add the rocks from round 1 and 2
+	end
 end
+
+
+
+math.randomseed(os.time())
+
+
+
+
 -- graphibcal stuff
 
 
@@ -53,11 +67,14 @@ function love.keypressed(key)
 		bag:addRock("red")
 	elseif key == "w" then
 		bag:addRock("white")
-	elseif key == "return" then
+	
+	elseif key == "e" or 
+			key == "return" then
 		bag:showrocks()
 		bag:pickARock()
-	elseif key == "e" then
-		bag:empty()
+		bag:endRound()
+		print(roundCounter)
+		print(pick)
 	end
 
 end
@@ -66,4 +83,10 @@ end
 bag:showrocks()
 
 bag:pickARock()
+
+
+
+-- game start
+bag:addRock("red")
+bag:addRock("white")
 
